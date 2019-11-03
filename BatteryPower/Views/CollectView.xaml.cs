@@ -45,6 +45,11 @@ namespace BatteryPower.Views
 
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
+            if(this.battery == null)
+            {
+                MessageBox.Show("未选中记录，请先选择一条电池资源！");
+                return;
+            }
             int cycle = -1;
             if (!int.TryParse(tbCollectCycle.Text, out cycle))
             {

@@ -72,6 +72,11 @@ namespace BatteryPower.Helpers
                 LogHelper.WriteLog(LogType.ERROR, "串口未配置，请先在巡检调试中选择串口。");
                 return;
             }
+            if (!this.CreateSerialPort(portConfig.serialName, portConfig.baudRate, portConfig.dataBit, portConfig.stopBit, portConfig.parityBit))
+            {
+                LogHelper.WriteLog(LogType.ERROR, "串口打开失败...");
+                return;
+            }
             LogHelper.WriteLog(LogType.INFO, "任务已启动...");
             var list = batteryList.Where(i => i.isEnabled == "是" && i.collectCycle > 1);
 
@@ -179,7 +184,7 @@ namespace BatteryPower.Helpers
                 this.isStoped = true;
                 this.isDoing = false;
                 this.cts.Cancel();
-                LogHelper.WriteLog(LogType.INFO, "任务停止！");
+                LogHelper.WriteLog(LogType.INFO, "任务已停止！");
             }
         }
 
@@ -231,8 +236,15 @@ namespace BatteryPower.Helpers
             LogHelper.WriteLog(LogType.INFO, "格式化发送内容完毕，开始写入串口！");
             try
             {
-                this.curSerialPort.Write(byteBuffer, 0, byteBuffer.Length);
-                LogHelper.WriteLog(LogType.INFO, "发送数据完毕！");
+                if (this.curSerialPort != null && this.curSerialPort.IsOpen)
+                {
+                    this.curSerialPort.Write(byteBuffer, 0, byteBuffer.Length);
+                    LogHelper.WriteLog(LogType.INFO, "发送数据完毕！");
+                }
+                else
+                {
+                    LogHelper.WriteLog(LogType.WARN, "连接已关闭！");
+                }
             }
             catch (System.Exception ex)
             {
@@ -368,15 +380,30 @@ namespace BatteryPower.Helpers
             }
 
             // 保存到本地csv
+            var curObj = new List<object>();
             DataRow dr = dataTable.NewRow();
-            dr[0] = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+            var curTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+            dr[0] = curTime;
             dr[1] = datas[0];
+            curObj.Add(curTime);
+            curObj.Add(datas[0]);
             for (int j = 0; j < voltageList.Count; j++)
             {
                 dr[j + 2] = voltageList[j];
+                curObj.Add(voltageList[j]);
             }
+            for (var j = 0; j < Param.CURRENT_VOLTAGE_DATA.Count; j++)
+            {
+                if (Param.CURRENT_VOLTAGE_DATA[j][1].ToString() == datas[0])
+                {
+                    Param.CURRENT_VOLTAGE_DATA.RemoveAt(j);
+                    break;
+                }
+            }
+            Param.CURRENT_VOLTAGE_DATA.Add(curObj.ToArray());
             dataTable.Rows.Add(dr);
             CSVFileHelper.SaveCSV(dataTable, dataFile);
+            LogHelper.WriteLog(LogType.ERROR, "数据处理完毕！采集到的电压为：" + string.Join(" ", voltageList));
         }
 
         private void CloseSerialPort()

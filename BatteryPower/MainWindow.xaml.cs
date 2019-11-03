@@ -34,6 +34,10 @@ namespace BatteryPower
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
             var tag = (sender as System.Windows.Controls.MenuItem).Tag.ToString();
+            if(this.conentGrid.Children.Count>0 && this.conentGrid.Children[0] is ShowView)
+            {
+                (this.conentGrid.Children[0] as ShowView).Stop();
+            }
             switch (tag)
             {
                 case "home":
@@ -96,6 +100,10 @@ namespace BatteryPower
         private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             this.homeView.StopTask();
+            if (this.conentGrid.Children.Count > 0 && this.conentGrid.Children[0] is ShowView)
+            {
+                (this.conentGrid.Children[0] as ShowView).Stop();
+            }
             LogHelper.Stop();
         }
     }
