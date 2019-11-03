@@ -41,6 +41,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -53,6 +54,15 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="WPFToolkit">
+      <HintPath>Libs\WPFToolkit.dll</HintPath>
+    </Reference>
+    <Reference Include="WPFToolkit.Extended">
+      <HintPath>Libs\WPFToolkit.Extended.dll</HintPath>
+    </Reference>
+    <Reference Include="WPFVisifire.Charts">
+      <HintPath>Libs\WPFVisifire.Charts.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -65,16 +75,27 @@
     </Compile>
     <Compile Include="Converters\ColorConverter.cs" />
     <Compile Include="Converters\LogConverter.cs" />
+    <Compile Include="Helpers\CRC.cs" />
+    <Compile Include="Helpers\CSVFileHelper.cs" />
     <Compile Include="Helpers\LogHelper.cs" />
+    <Compile Include="Helpers\MathHelper.cs" />
     <Compile Include="Helpers\Param.cs" />
+    <Compile Include="Helpers\Task.cs" />
     <Compile Include="Helpers\XmlHelper.cs" />
     <Compile Include="Models\Battery.cs" />
     <Compile Include="Models\LogType.cs" />
+    <Compile Include="Models\Port.cs" />
+    <Compile Include="Views\CollectLogView.xaml.cs">
+      <DependentUpon>CollectLogView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\CollectView.xaml.cs">
       <DependentUpon>CollectView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\DebugView.xaml.cs">
       <DependentUpon>DebugView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\HomeView.xaml.cs">
+      <DependentUpon>HomeView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\IndicatorView.xaml.cs">
       <DependentUpon>IndicatorView.xaml</DependentUpon>
@@ -118,11 +139,19 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Views\CollectLogView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\CollectView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\DebugView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\HomeView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

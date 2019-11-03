@@ -51,6 +51,7 @@
             <StackPanel  Grid.Row="2" Grid.Column="3" Margin="5" HorizontalAlignment="Right" Orientation="Horizontal">
                 <Button x:Name="btnOpenPort" Height="23" Width="80" Click="btnOpenPort_Click">打开串口</Button>
                 <Button x:Name="btnClosePort" IsEnabled="False" Height="23" Width="80" Margin="11,0,0,0" Click="btnClosePort_Click">断开连接</Button>
+                <Button x:Name="btnSave" Height="23" Width="80" Margin="11,0,0,0" Click="btnSave_Click">保存设置</Button>
             </StackPanel>
         </Grid>
         <comps:FuncTitle Grid.Row="2" Title="发送数据"/>

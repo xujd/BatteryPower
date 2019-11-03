@@ -32,26 +32,81 @@ namespace BatteryPower.Views
         List<string> parityList = new List<string>() { "无", "奇校验", "偶校验" };
         List<string> portNames = new List<string>();
 
+        private string portFile
+        {
+            get { return Param.PORT_FILE; }
+        }
+
+        private PortConfig portConfig = null;
+
         public DebugView()
         {
             InitializeComponent();
 
+            this.Unloaded += DebugView_Unloaded;
+
             this.init();
+        }
+
+        private void DebugView_Unloaded(object sender, RoutedEventArgs e)
+        {
+            this.CloseSerialPort();
         }
 
         private void init()
         {
+            var config = XmlHelper.LoadFromXml(this.portFile, typeof(PortConfig)) as PortConfig;
+            if (config != null)
+            {
+                this.portConfig = config;
+            }
+
             this.portNames = SerialPort.GetPortNames().ToList();
             this.cbSerialPort.ItemsSource = this.portNames;
-            this.cbSerialPort.SelectedIndex = 0;
+            if (this.portConfig != null)
+            {
+                this.cbSerialPort.SelectedItem = this.portConfig.serialName;
+            }
+            else
+            {
+                this.cbSerialPort.SelectedIndex = 0;
+            }
             this.cbBitRate.ItemsSource = bitRateList;
-            this.cbBitRate.SelectedIndex = 5;//默认9600
+            if (this.portConfig != null)
+            {
+                this.cbBitRate.SelectedItem = this.portConfig.baudRate;
+            }
+            else
+            {
+                this.cbBitRate.SelectedIndex = 5;//默认9600
+            }
             this.cbDataBit.ItemsSource = dataBitList;
-            this.cbDataBit.SelectedIndex = 3;//默认8
+            if (this.portConfig != null)
+            {
+                this.cbDataBit.SelectedItem = this.portConfig.dataBit;
+            }
+            else
+            {
+                this.cbDataBit.SelectedIndex = 3;//默认8
+            }
             this.cbStopBit.ItemsSource = stopBitList;
-            this.cbStopBit.SelectedIndex = 0;//默认1
+            if (this.portConfig != null)
+            {
+                this.cbStopBit.SelectedItem = this.portConfig.stopBit;
+            }
+            else
+            {
+                this.cbStopBit.SelectedIndex = 0;//默认1
+            }
             this.cbParity.ItemsSource = parityList;
-            this.cbParity.SelectedIndex = 1;//默认奇校验
+            if (this.portConfig != null)
+            {
+                this.cbParity.SelectedItem = this.portConfig.parityBit;
+            }
+            else
+            {
+                this.cbParity.SelectedIndex = 1;//默认奇校验
+            }
 
             this.lbLog.ItemsSource = LogHelper.LogList;
         }
@@ -97,13 +152,14 @@ namespace BatteryPower.Views
                 this.curSerialPort.DiscardOutBuffer();
                 this.curSerialPort.Dispose();
                 this.curSerialPort.Close();
+                this.curSerialPort.DataReceived -= Sp_DataReceived;
                 this.curSerialPort = null;
             }
         }
 
-        private bool CreateSerialPort(string serialName, string strBaudRate, string strDateBits, string strStopBits, string strParity)
+        private bool CreateSerialPort(string serialName, string strBaudRate, string strDataBit, string strStopBit, string strParityBit)
         {
-            LogHelper.WriteLog(LogType.INFO, "准备打开" + serialName + "，波特率：" + strBaudRate + "，数据位：" + strDateBits + "，停止位：" + strStopBits + "，校验位：" + strParity + "。");
+            LogHelper.WriteLog(LogType.INFO, "准备打开" + serialName + "，波特率：" + strBaudRate + "，数据位：" + strDataBit + "，停止位：" + strStopBit + "，校验位：" + strParityBit + "。");
             //创建新串口
             try
             {
@@ -121,11 +177,11 @@ namespace BatteryPower.Views
                 sp.PortName = serialName;
                 //设置各“串口设置”
                 Int32 iBaudRate = Convert.ToInt32(strBaudRate);
-                Int32 iDateBits = Convert.ToInt32(strDateBits);
+                Int32 iDataBit = Convert.ToInt32(strDataBit);
 
                 sp.BaudRate = iBaudRate;       //波特率
-                sp.DataBits = iDateBits;       //数据位
-                switch (strStopBits)            //停止位
+                sp.DataBits = iDataBit;       //数据位
+                switch (strStopBit)            //停止位
                 {
                     case "1":
                         sp.StopBits = StopBits.One;
@@ -139,7 +195,7 @@ namespace BatteryPower.Views
                     default:
                         break;
                 }
-                switch (strParity)             //校验位
+                switch (strParityBit)             //校验位
                 {
                     case "无":
                         sp.Parity = Parity.None;
@@ -266,5 +322,24 @@ namespace BatteryPower.Views
             }
             LogHelper.WriteLog(LogType.INFO, "写入内容完毕！");
         }
+
+        private void btnSave_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.cbSerialPort.SelectedItem == null)
+            {
+                LogHelper.WriteLog(LogType.ERROR, "没有选择串口！");
+                return;
+            }
+            this.portConfig = new PortConfig();
+            this.portConfig.serialName = this.cbSerialPort.SelectedItem.ToString();
+            this.portConfig.baudRate = this.cbBitRate.SelectedItem.ToString();
+            this.portConfig.dataBit = this.cbDataBit.SelectedItem.ToString();
+            this.portConfig.stopBit = this.cbStopBit.SelectedItem.ToString();
+            this.portConfig.parityBit = this.cbParity.SelectedItem.ToString();
+
+            XmlHelper.SaveToXml(this.portFile, this.portConfig);
+        }
+
+
     }
 }

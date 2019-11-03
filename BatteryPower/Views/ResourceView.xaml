@@ -19,43 +19,52 @@
         </Grid.RowDefinitions>
         <WrapPanel Orientation="Horizontal">
             <StackPanel Orientation="Horizontal" Margin="11,0,0,0">
-                <TextBlock Text="编号：" Width="75" Height="23" TextAlignment="Right"/>
+                <TextBlock Text="编号：" Width="90" Height="23" TextAlignment="Right"/>
                 <TextBox x:Name="tbId" Width="200" Height="23"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="11,0,0,0">
-                <TextBlock Text="地址：" Width="75" Height="23" TextAlignment="Right"/>
+                <TextBlock Text="地址：" Width="90" Height="23" TextAlignment="Right"/>
                 <TextBox x:Name="tbAddress" Width="200" Height="23"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="11,0,0,0">
-                <TextBlock Text="操作人员：" Width="75" Height="23" TextAlignment="Right"/>
+                <TextBlock Text="操作人员：" Width="90" Height="23" TextAlignment="Right"/>
                 <TextBox x:Name="tbOprUser" Width="200" Height="23"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="11,0,0,0">
-                <TextBlock Text="关键机车号：" Width="75" Height="23" TextAlignment="Right"/>
+                <TextBlock Text="关键机车号：" Width="90" Height="23" TextAlignment="Right"/>
                 <TextBox x:Name="tbKeyTrainNo" Width="200" Height="23"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="11,0,0,0">
-                <TextBlock Text="电池型号：" Width="75" Height="23" TextAlignment="Right"/>
+                <TextBlock Text="电池型号：" Width="90" Height="23" TextAlignment="Right"/>
                 <TextBox x:Name="tbBatteryType" Width="200" Height="23"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="11,0,0,0">
-                <TextBlock Text="预警门限：" Width="75" Height="23" TextAlignment="Right"/>
+                <TextBlock Text="预警门限：" Width="90" Height="23" TextAlignment="Right"/>
                 <TextBox x:Name="tbThreshold" Width="200" Height="23"/>
             </StackPanel>
-            <StackPanel Orientation="Horizontal" Margin="97,0,0,0">
-                <Button x:Name="btnSave" Height="23" Width="80" Click="btnSave_Click">保存</Button>
-                <Button x:Name="btnDelete" Foreground="Red" Margin="11,0,0,0" Height="23" Width="80" Click="btnDelete_Click">删除</Button>
-            </StackPanel>
+            <!--<StackPanel Orientation="Horizontal" Margin="11,0,0,0" Visibility="Collapsed">
+                <TextBlock Text="采集周期(分钟)：" Width="90" Height="23" TextAlignment="Right"/>
+                <TextBox x:Name="tbCollectCycle" Width="200" Height="23"/>
+            </StackPanel>-->
+            <Grid Margin="11,0,0,0" Width="290">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button x:Name="btnSave" Height="23" Width="80" Click="btnSave_Click">保存</Button>
+                    <Button x:Name="btnDelete" Foreground="Red" Margin="11,0,0,0" Height="23" Width="80" Click="btnDelete_Click">删除</Button>
+                    <Button x:Name="btnReset" Margin="11,0,0,0" Height="23" Width="80" Click="btnReset_Click">重置</Button>
+                </StackPanel>
+            </Grid>
         </WrapPanel>
         <DataGrid x:Name="dataGrid" SelectionMode="Single" SelectionChanged="dataGrid_SelectionChanged"
+                 HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"
                   AutoGenerateColumns="False" RowHeight="26" IsReadOnly="True" Grid.Row="1" Margin="0,11,0,0">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="编号" Width="*" Binding="{Binding id}"/>
-                <DataGridTextColumn Header="地址" Width="*" Binding="{Binding address}"/>
-                <DataGridTextColumn Header="操作人员" Width="*" Binding="{Binding oprUser}"/>
-                <DataGridTextColumn Header="关键机车号" Width="*" Binding="{Binding keyTrainNo}"/>
-                <DataGridTextColumn Header="电池型号" Width="*" Binding="{Binding batteryType}"/>
-                <DataGridTextColumn Header="预警门限" Width="*" Binding="{Binding threshold}"/>
+                <DataGridTextColumn Header="编号" Width="Auto" Binding="{Binding id}"/>
+                <DataGridTextColumn Header="地址" Width="Auto" Binding="{Binding address}"/>
+                <DataGridTextColumn Header="操作人员" Width="Auto" Binding="{Binding oprUser}"/>
+                <DataGridTextColumn Header="关键机车号" Width="Auto" Binding="{Binding keyTrainNo}"/>
+                <DataGridTextColumn Header="电池型号" Width="Auto" Binding="{Binding batteryType}"/>
+                <DataGridTextColumn Header="预警门限" Width="Auto" Binding="{Binding threshold}"/>
+                <DataGridTextColumn Header="最后修改时间" Width="Auto" Binding="{Binding lastModifyTime}"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

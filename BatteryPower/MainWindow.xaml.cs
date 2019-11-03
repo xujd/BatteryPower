@@ -27,6 +27,8 @@ namespace BatteryPower
         {
             InitializeComponent();
             LogHelper.dispatcher = this.Dispatcher;
+
+            this.Closing += MainWindow_Closing;
         }
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)
@@ -34,6 +36,11 @@ namespace BatteryPower
             var tag = (sender as System.Windows.Controls.MenuItem).Tag.ToString();
             switch (tag)
             {
+                case "home":
+                    this.conentGrid.Children.Clear();
+                    this.homeView.Visibility = Visibility.Visible;
+                    this.Title = this.sysName + "-首页";
+                    break;
                 case "about":
                     (new About()).ShowDialog();
                     break;
@@ -50,7 +57,12 @@ namespace BatteryPower
                 case "collect":
                     this.conentGrid.Children.Clear();
                     this.conentGrid.Children.Add(new CollectView());
-                    this.Title = this.sysName + "-采集管理";
+                    this.Title = this.sysName + "-采集任务配置";
+                    break;
+                case "log":
+                    this.conentGrid.Children.Clear();
+                    this.conentGrid.Children.Add(new CollectLogView());
+                    this.Title = this.sysName + "-采集日志查看";
                     break;
                 case "indicator":
                     this.conentGrid.Children.Clear();
@@ -74,6 +86,17 @@ namespace BatteryPower
                     break;
 
             }
+            if(tag != "home" && tag != "about")
+            {
+                this.homeView.Visibility = Visibility.Collapsed;
+                this.conentGrid.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            this.homeView.StopTask();
+            LogHelper.Stop();
         }
     }
 }

@@ -14,5 +14,14 @@ namespace BatteryPower.Models
         public string keyTrainNo { get; set; }
         public string batteryType { get; set; }
         public double threshold { get; set; }
+        public int collectCycle { get; set; }
+        public string isEnabled { get; set; }
+        public string lastModifyTime { get; set; }
+
+        public Battery()
+        {
+            this.collectCycle = -1;
+            this.isEnabled = "否";
+        }
     }
 }

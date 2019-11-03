@@ -1,0 +1,29 @@
+﻿<UserControl x:Class="BatteryPower.Views.CollectLogView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:conv="clr-namespace:BatteryPower.Converters"
+             mc:Ignorable="d" Background="White"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <conv:ColorConverter x:Key="colorConverter"/>
+        <conv:LogConverter x:Key="logConverter"/>
+    </UserControl.Resources>
+    <Grid>
+        <ListBox x:Name="lbLog" Margin="5" VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Width="50" Grid.Column="0" Text="{Binding Converter={StaticResource logConverter},ConverterParameter=A}" Foreground="{Binding Converter={StaticResource colorConverter}}"/>
+                        <TextBlock Grid.Column="1" Text="{Binding Converter={StaticResource logConverter},ConverterParameter=Z}"/>
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </Grid>
+</UserControl>

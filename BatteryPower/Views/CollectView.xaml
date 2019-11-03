@@ -7,6 +7,45 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        <TextBlock Text="该功能暂未开放"/>  
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <WrapPanel Orientation="Horizontal">
+            <StackPanel Orientation="Horizontal" Margin="11,0,0,0">
+                <TextBlock Text="编号：" Width="90" Height="23" TextAlignment="Right"/>
+                <TextBox x:Name="tbId" IsEnabled="False" Width="200" Height="23"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="11,0,0,0">
+                <TextBlock Text="地址：" Width="90" Height="23" TextAlignment="Right"/>
+                <TextBox x:Name="tbAddress" IsEnabled="False" Width="200" Height="23"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="11,0,0,0">
+                <TextBlock Text="采集周期(分钟)：" Width="90" Height="23" TextAlignment="Right"/>
+                <TextBox x:Name="tbCollectCycle" Width="200" Height="23"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="11,0,0,0">
+                <TextBlock Text="是否启动：" Width="90" Height="23" TextAlignment="Right"/>
+                <RadioButton x:Name="rbEnabled" Content="是" VerticalAlignment="Center"/>
+                <RadioButton x:Name="rbDisabled" Content="否" VerticalAlignment="Center" Margin="5,0,0,0"/>
+            </StackPanel>
+            <Grid Margin="22,0,0,0">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                    <Button x:Name="btnSave" Height="23" Width="80" Click="btnSave_Click">保存</Button>
+                </StackPanel>
+            </Grid>
+        </WrapPanel>
+        <DataGrid x:Name="dataGrid" SelectionMode="Single" SelectionChanged="dataGrid_SelectionChanged"
+                  AutoGenerateColumns="False" RowHeight="26" IsReadOnly="True" Grid.Row="1" Margin="0,11,0,0">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="编号" Width="*" Binding="{Binding id}"/>
+                <DataGridTextColumn Header="地址" Width="*" Binding="{Binding address}"/>
+                <DataGridTextColumn Header="采集周期(分钟)" Width="*" Binding="{Binding collectCycle}"/>
+                <DataGridTextColumn Header="是否启动" Width="*" Binding="{Binding isEnabled}"/>
+                <DataGridTextColumn Header="最后修改时间" Width="*" Binding="{Binding lastModifyTime}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <!--<Button x:Name="btnDo" Grid.Row="2" HorizontalAlignment="Right" Margin="11" Height="23" Width="80" Click="btnDo_Click">开始执行</Button>-->
     </Grid>
 </UserControl>

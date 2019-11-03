@@ -27,7 +27,7 @@ namespace BatteryPower.Views
 
         private string dataFile
         {
-            get { return Param.APPFILEPATH + @"data\batterys.xml"; }
+            get { return Param.BATTERY_FILE; }
         }
 
         public ResourceView()
@@ -58,6 +58,12 @@ namespace BatteryPower.Views
                     MessageBox.Show("蓄电池编号重复！");
                     return;
                 }
+                tempList = this.dataList.Where(item => item.address == this.tbAddress.Text && this.battery.uid != item.uid);
+                if (tempList.Count() > 0)
+                {
+                    MessageBox.Show("蓄电池地址重复！");
+                    return;
+                }
             }
             else
             {
@@ -67,11 +73,18 @@ namespace BatteryPower.Views
                     MessageBox.Show("蓄电池编号重复！");
                     return;
                 }
+                tempList = this.dataList.Where(item => item.address == this.tbAddress.Text);
+                if (tempList.Count() > 0)
+                {
+                    MessageBox.Show("蓄电池地址重复！");
+                    return;
+                }
             }
 
             if (!string.IsNullOrEmpty(this.tbId.Text) && !string.IsNullOrEmpty(this.tbAddress.Text)
-                && !string.IsNullOrEmpty(this.tbOprUser.Text) && !string.IsNullOrEmpty(this.tbKeyTrainNo.Text)
-                && !string.IsNullOrEmpty(this.tbBatteryType.Text))
+                //&& !string.IsNullOrEmpty(this.tbOprUser.Text) && !string.IsNullOrEmpty(this.tbKeyTrainNo.Text)
+                //&& !string.IsNullOrEmpty(this.tbBatteryType.Text)
+                )
             {
                 if (this.battery != null)
                 {
@@ -92,6 +105,7 @@ namespace BatteryPower.Views
                 data.keyTrainNo = this.tbKeyTrainNo.Text;
                 data.batteryType = this.tbBatteryType.Text;
                 data.threshold = threshold;
+                data.lastModifyTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
 
                 this.dataList.Add(data);
 
@@ -146,6 +160,13 @@ namespace BatteryPower.Views
 
             this.dataList.Remove(this.dataGrid.SelectedItem as Battery);
             XmlHelper.SaveToXml(this.dataFile, this.dataList);
+        }
+
+        private void btnReset_Click(object sender, RoutedEventArgs e)
+        {
+            this.battery = null;
+            this.tbId.Text = this.tbAddress.Text = this.tbOprUser.Text =
+            this.tbKeyTrainNo.Text = this.tbBatteryType.Text = this.tbThreshold.Text = "";
         }
     }
 }

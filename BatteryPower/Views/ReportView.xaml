@@ -13,16 +13,8 @@
         </Grid.RowDefinitions>
         <WrapPanel Orientation="Horizontal">
             <StackPanel Orientation="Horizontal" Margin="11,0,0,0">
-                <TextBlock Text="编号：" Width="75" Height="23" TextAlignment="Right"/>
-                <TextBox x:Name="tbId" Width="200" Height="23"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" Margin="11,0,0,0">
-                <TextBlock Text="操作人员：" Width="75" Height="23" TextAlignment="Right"/>
-                <TextBox x:Name="tbOprUser" Width="200" Height="23"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" Margin="11,0,0,0">
-                <TextBlock Text="关键机车号：" Width="75" Height="23" TextAlignment="Right"/>
-                <TextBox x:Name="tbKeyTrainNo" Width="200" Height="23"/>
+                <TextBlock Text="地址：" Width="75" Height="23" TextAlignment="Right"/>
+                <TextBox x:Name="tbAddress" Width="200" Height="23"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="11,0,0,0">
                 <TextBlock Text="开始日期：" Width="75" Height="23" TextAlignment="Right"/>
@@ -34,9 +26,11 @@
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="97,0,0,0">
                 <Button x:Name="btnQuery" Height="23" Width="80" Click="btnQuery_Click">查询</Button>
+                <!--<Button x:Name="btnExport" Height="23" Width="80" Margin="11,0,0,0" Click="btnExport_Click">导出</Button>-->
             </StackPanel>
         </WrapPanel>
-        <DataGrid x:Name="dataGrid" Grid.Row="1" RowHeight="26" IsReadOnly="True" Margin="0,11,0,0">
+        <DataGrid x:Name="dataGrid" Grid.Row="1" RowHeight="26" IsReadOnly="True" Margin="0,11,0,0"
+                  ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto">
         </DataGrid>
     </Grid>
 </UserControl>
