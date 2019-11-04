@@ -6,16 +6,34 @@
              xmlns:local="clr-namespace:BatteryPower.Views"
              mc:Ignorable="d" 
              xmlns:comps="clr-namespace:BatteryPower.Comps"
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="600">
     <UserControl.Resources>
         <Style TargetType="TextBlock">
             <Setter Property="Padding" Value="0"/>
             <Setter Property="Margin" Value="0"/>
         </Style>
     </UserControl.Resources>
-    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto"
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Border BorderThickness="0,0,0,1" BorderBrush="#cccccc" Margin="11">
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                <TextBlock Text="数据时间：" VerticalAlignment="Center"/>
+                <TextBlock x:Name="tbTime" Text="2019-11-04 11:22:11" VerticalAlignment="Center"/>
+                <TextBlock Text="总电压：" VerticalAlignment="Center" Margin="11,0,0,0"/>
+                <TextBlock x:Name="tbTotal" Text="12.811V" VerticalAlignment="Center"/>
+                <TextBlock Text="预警门限：" VerticalAlignment="Center" Margin="11,0,0,0"/>
+                <TextBox x:Name="tbThreshold" KeyDown="tbThreshold_KeyDown" Text="0" Height="23" VerticalAlignment="Center" Width="70"/>
+                <Button Content="升序排列" Height="23" Margin="22,0,0,0"/>
+                <Button Content="降序排列" Height="23" Margin="11,0,0,0"/>
+            </StackPanel>
+        </Border>
+        <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto"
                       VirtualizingStackPanel.VirtualizationMode="Recycling" VirtualizingStackPanel.IsVirtualizing="True">
-        <Grid x:Name="viewGrid" VerticalAlignment="Top">
-        </Grid>
-    </ScrollViewer>
+            <Grid x:Name="viewGrid" VerticalAlignment="Top">
+            </Grid>
+        </ScrollViewer>
+    </Grid>
 </UserControl>

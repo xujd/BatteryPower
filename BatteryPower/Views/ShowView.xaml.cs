@@ -38,6 +38,8 @@ namespace BatteryPower.Views
 
         private DispatcherTimer timer = new DispatcherTimer();
 
+        private double threshold = 0;
+
         public ShowView()
         {
             InitializeComponent();
@@ -46,6 +48,12 @@ namespace BatteryPower.Views
             if (list != null)
             {
                 this.batteryList = list.Where(i => i.isEnabled == "是").ToList();
+            }
+
+            if (this.batteryList.Count > 0)
+            {
+                this.threshold = this.batteryList.ElementAt(0).threshold;
+                this.tbThreshold.Text = this.threshold.ToString();
             }
 
             // 创建视图元素
@@ -65,14 +73,14 @@ namespace BatteryPower.Views
 
         private void RefreshView()
         {
-            foreach(var item in this.funcTitleList)
+            foreach (var item in this.funcTitleList)
             {
                 object[] data = null;
                 bool flag = false;
-                for(var i = 0; i < Param.CURRENT_VOLTAGE_DATA.Count; i++)
+                for (var i = 0; i < Param.CURRENT_VOLTAGE_DATA.Count; i++)
                 {
                     data = Param.CURRENT_VOLTAGE_DATA[i];
-                    if(item.Tag.ToString() == data[1].ToString())
+                    if (item.Tag.ToString() == data[1].ToString())
                     {
                         flag = true;
                         break;
@@ -82,7 +90,7 @@ namespace BatteryPower.Views
                 {
                     item.Title = string.Format("蓄电池地址：{0}（时间：{1}）", data[1], data[0]);
                     var labelList = this.valueLabelList.Where(i => i.Tag.ToString().StartsWith(data[1].ToString()));
-                    for(var i = 0; i < labelList.Count(); i++)
+                    for (var i = 0; i < labelList.Count(); i++)
                     {
                         labelList.ElementAt(i).Content = ((double)data[i + 2]).ToString("F3") + "V";
                         var threshold = this.batteryList.Where(d => d.address == item.Tag.ToString()).ElementAt(0).threshold;
@@ -102,10 +110,10 @@ namespace BatteryPower.Views
                 var item = this.batteryList[i];
                 viewGrid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
                 viewGrid.RowDefinitions.Add(new RowDefinition());
-                var funcTitle = new FuncTitle() { Tag = item.address, Title = string.Format("蓄电池地址：{0}（时间：{1}）", item.address, "-") };
-                this.funcTitleList.Add(funcTitle);
-                Grid.SetRow(funcTitle, i * 2);
-                viewGrid.Children.Add(funcTitle);
+                //var funcTitle = new FuncTitle() { Tag = item.address, Title = string.Format("蓄电池地址：{0}（时间：{1}）", item.address, "-") };
+                //this.funcTitleList.Add(funcTitle);
+                //Grid.SetRow(funcTitle, i * 2);
+                //viewGrid.Children.Add(funcTitle);
                 var grid = new Grid() { HorizontalAlignment = HorizontalAlignment.Stretch };
                 Grid.SetRow(grid, i * 2 + 1);
                 viewGrid.Children.Add(grid);
@@ -115,7 +123,7 @@ namespace BatteryPower.Views
                 {
                     var sp = new StackPanel() { Orientation = Orientation.Horizontal, Margin = new Thickness(11, 0, 0, 5) };
                     wrapPanel.Children.Add(sp);
-                    var textBlock = new TextBlock() { Tag = item.address, Text = string.Format("第{0}节：", j + 1), Width = 54, VerticalAlignment = VerticalAlignment.Center };
+                    var textBlock = new TextBlock() { Tag = item.address, Text = string.Format("第{0}节：", i * 24 + j + 1), Width = 54, VerticalAlignment = VerticalAlignment.Center };
                     sp.Children.Add(textBlock);
                     var label = new Label() { Tag = item.address + "-" + j, Content = "-V", Width = 65, Height = 23, Background = greenBrush, VerticalContentAlignment = VerticalAlignment.Center };
                     sp.Children.Add(label);
@@ -128,6 +136,22 @@ namespace BatteryPower.Views
         {
             this.timer.Stop();
             this.timer.Tick -= Timer_Tick;
+        }
+
+        private void tbThreshold_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.Key == Key.Enter)
+            {
+                double data = -1;
+                if (!double.TryParse(tbThreshold.Text, out data))
+                {
+                    MessageBox.Show("预警门限为非法数字！");
+                    return;
+                }
+                this.threshold = data;
+                // 刷新页面
+                this.RefreshView();
+            }
         }
     }
 }
