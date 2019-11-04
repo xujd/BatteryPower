@@ -85,6 +85,7 @@
     <Compile Include="Models\Battery.cs" />
     <Compile Include="Models\LogType.cs" />
     <Compile Include="Models\Port.cs" />
+    <Compile Include="Models\VoltageData.cs" />
     <Compile Include="Views\CollectLogView.xaml.cs">
       <DependentUpon>CollectLogView.xaml</DependentUpon>
     </Compile>
@@ -208,6 +209,10 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="info.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\order_asc.png" />
+    <Resource Include="Images\order_desc.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
