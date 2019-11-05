@@ -50,6 +50,12 @@ namespace BatteryPower.Views
                 MessageBox.Show("预警门限为非法数字！");
                 return;
             }
+            double coefficient = -1;
+            if (!double.TryParse(tbCoefficient.Text, out coefficient))
+            {
+                MessageBox.Show("电压参考系数为非法数字！");
+                return;
+            }
             if (this.battery != null)
             {
                 var tempList = this.dataList.Where(item => item.id == this.tbId.Text && this.battery.uid != item.uid);
@@ -105,6 +111,7 @@ namespace BatteryPower.Views
                 data.keyTrainNo = this.tbKeyTrainNo.Text;
                 data.batteryType = this.tbBatteryType.Text;
                 data.threshold = threshold;
+                data.coefficient = coefficient;
                 data.lastModifyTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
 
                 this.dataList.Add(data);
@@ -117,6 +124,7 @@ namespace BatteryPower.Views
                 this.tbKeyTrainNo.Text = "";
                 this.tbBatteryType.Text = "";
                 this.tbThreshold.Text = "";
+                this.tbCoefficient.Text = "";
 
                 XmlHelper.SaveToXml(this.dataFile, this.dataList);
             }
@@ -137,6 +145,7 @@ namespace BatteryPower.Views
                 this.tbKeyTrainNo.Text = item.keyTrainNo;
                 this.tbBatteryType.Text = item.batteryType;
                 this.tbThreshold.Text = item.threshold.ToString();
+                this.tbCoefficient.Text = item.coefficient>0?item.coefficient.ToString():"";
 
                 this.battery = item;
             }
@@ -157,6 +166,7 @@ namespace BatteryPower.Views
             this.tbKeyTrainNo.Text = "";
             this.tbBatteryType.Text = "";
             this.tbThreshold.Text = "";
+            this.tbCoefficient.Text = "";
 
             this.dataList.Remove(this.dataGrid.SelectedItem as Battery);
             XmlHelper.SaveToXml(this.dataFile, this.dataList);
@@ -167,6 +177,7 @@ namespace BatteryPower.Views
             this.battery = null;
             this.tbId.Text = this.tbAddress.Text = this.tbOprUser.Text =
             this.tbKeyTrainNo.Text = this.tbBatteryType.Text = this.tbThreshold.Text = "";
+            this.tbCoefficient.Text = "";
         }
     }
 }

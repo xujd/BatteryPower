@@ -81,6 +81,7 @@
     <Compile Include="Helpers\MathHelper.cs" />
     <Compile Include="Helpers\Param.cs" />
     <Compile Include="Helpers\Task.cs" />
+    <Compile Include="Helpers\TaskRT.cs" />
     <Compile Include="Helpers\XmlHelper.cs" />
     <Compile Include="Models\Battery.cs" />
     <Compile Include="Models\LogType.cs" />

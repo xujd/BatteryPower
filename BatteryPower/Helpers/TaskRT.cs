@@ -10,7 +10,7 @@ using System.Windows.Threading;
 
 namespace BatteryPower.Helpers
 {
-    public class Task
+    public class TaskRT
     {
         private CancellationTokenSource cts = new CancellationTokenSource();
         private SerialPort curSerialPort = null;
@@ -36,14 +36,18 @@ namespace BatteryPower.Helpers
             get { return Param.VOLTAGE_FILE; }
         }
 
-        public Task(List<Battery> batteryList, PortConfig portConfig)
+        List<Object[]> lastestData = new List<object[]>();
+        int timeTick = 0;
+        bool isFirstSave = true;
+
+        public TaskRT(List<Battery> batteryList, PortConfig portConfig)
         {
             this.batteryList = batteryList;
             this.portConfig = portConfig;
 
             // 数据表结构
             dataTable = CSVFileHelper.OpenCSV(dataFile);
-            if(dataTable == null)
+            if (dataTable == null)
             {
                 dataTable = new DataTable();
                 DataColumn dc = new DataColumn("采集时间");
@@ -97,41 +101,76 @@ namespace BatteryPower.Helpers
             thread = new Thread(new ThreadStart(startTask));
             thread.Start();
 
-            checkTimer.Interval = TimeSpan.FromMinutes(1);
+            // 定时任务，5秒执行一次
+            checkTimer.Interval = TimeSpan.FromSeconds(5);
             checkTimer.Tick += CheckTimer_Tick;
             checkTimer.Start();
-
-            //var msg = "70 03 60 08 3c 08 49 08 40 08 3b 08 3c 08 46 08 3c 08 47 08 38 08 32 08 47 08 3d 08 37 08 38 08 32 08 3c 08 3a 08 45 08 3d 08 38 08 45 08 37 08 37 08 41 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 05 0d";
-            //this.ProcessMessage(msg);
+            
         }
 
         private void CheckTimer_Tick(object sender, EventArgs e)
         {
-            if (timeIndex == this.maxIndex)
-            {
-                timeIndex = 0;
-            }
-            ++timeIndex;
+            //if (timeIndex == this.maxIndex)
+            //{
+            //    timeIndex = 0;
+            //}
+            //++timeIndex;
             var list = batteryList.Where(i => i.isEnabled == "是" && i.collectCycle > 1);
 
             foreach (var item in list)
             {
-                var b = new Battery();
-                b.id = item.id;
-                b.address = item.address;
-                if (timeIndex % item.collectCycle == 0)  // 处理时间到
+                if (processingList.Find(i => i.address == item.address) == null)  // 上一轮执行完时才添加下一轮
                 {
+                    var b = new Battery();
+                    b.id = item.id;
+                    b.address = item.address;
                     processingList.Add(b);
                     LogHelper.WriteLog(LogType.INFO, "添加到待执行任务队列，地址为：" + b.address);
+                    //if (timeIndex % item.collectCycle == 0)  // 处理时间到
+                    //{
+                    //    processingList.Add(b);
+                    //    LogHelper.WriteLog(LogType.INFO, "添加到待执行任务队列，地址为：" + b.address);
+                    //}
                 }
             }
+
+            if (timeTick++ >= 60 || isFirstSave)  // 每5分钟保存到存储
+            {
+                if (!isFirstSave)
+                {
+                    timeTick = 0;
+                }
+                isFirstSave = false;
+                // 保存到本地
+                this.SaveToStore();
+            }
+
+        }
+
+        private void SaveToStore()
+        {
+            var list = batteryList.Where(i => i.isEnabled == "是" && i.collectCycle > 1);
+            foreach (var item in list)
+            {
+                var curObj = this.lastestData.FindLast(i => i[1].ToString() == item.address);
+                if (curObj != null)
+                {
+                    DataRow dr = dataTable.NewRow();
+                    for (var i = 0; i < curObj.Count(); i++)
+                    {
+                        dr[i] = curObj[i];
+                    }
+                    dataTable.Rows.Add(dr);
+                }
+            }
+            CSVFileHelper.SaveCSV(dataTable, dataFile);
         }
 
         private void startTask()
         {
             while (true)
             {
-                Thread.Sleep(1000);
+                Thread.Sleep(200);
                 if (this.isStoped)
                 {
                     break;
@@ -184,6 +223,10 @@ namespace BatteryPower.Helpers
                 this.CloseSerialPort();
                 this.isStoped = true;
                 this.isDoing = false;
+                this.timeTick = 0;
+                this.isFirstSave = true;
+                this.processingList.Clear();
+                this.processingIndex = 0;
                 this.cts.Cancel();
                 LogHelper.WriteLog(LogType.INFO, "任务已停止！");
             }
@@ -365,7 +408,7 @@ namespace BatteryPower.Helpers
         private void ProcessMessage(string message)
         {
             var datas = message.Split(' '); // 前三个为地址+功能码+应答字节数，后两个为CRC校验
-            if(datas.Length != 101)  // 格式不对
+            if (datas.Length != 101)  // 格式不对
             {
                 LogHelper.WriteLog(LogType.ERROR, "数据格式不对，跳过此段数据！");
                 return;
@@ -384,25 +427,21 @@ namespace BatteryPower.Helpers
             }
             // 电压数据
             List<double> voltageList = new List<double>();
-            for(var i = 3; i < 51; i+=2)
+            for (var i = 3; i < 51; i += 2)
             {
                 var hexStr = datas[i] + datas[i + 1];
-                var vNum =  Int32.Parse(hexStr, System.Globalization.NumberStyles.HexNumber);
+                var vNum = Int32.Parse(hexStr, System.Globalization.NumberStyles.HexNumber);
                 // 乘以参考系数并放大1000倍
                 voltageList.Add(vNum * coefficient / 1000.0);
             }
 
             // 保存到本地csv
             var curObj = new List<object>();
-            DataRow dr = dataTable.NewRow();
             var curTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-            dr[0] = curTime;
-            dr[1] = datas[0];
             curObj.Add(curTime);
             curObj.Add(datas[0]);
             for (int j = 0; j < voltageList.Count; j++)
             {
-                dr[j + 2] = voltageList[j];
                 curObj.Add(voltageList[j]);
             }
             for (var j = 0; j < Param.CURRENT_VOLTAGE_DATA.Count; j++)
@@ -414,8 +453,14 @@ namespace BatteryPower.Helpers
                 }
             }
             Param.CURRENT_VOLTAGE_DATA.Add(curObj.ToArray());
-            dataTable.Rows.Add(dr);
-            CSVFileHelper.SaveCSV(dataTable, dataFile);
+
+            // 缓存数据
+            this.lastestData.Add(curObj.ToArray());
+            if (this.lastestData.Count > 100)
+            {
+                this.lastestData.RemoveAt(0);
+            }
+
             LogHelper.WriteLog(LogType.ERROR, "数据处理完毕！采集到的电压为：" + string.Join(" ", voltageList));
         }
 

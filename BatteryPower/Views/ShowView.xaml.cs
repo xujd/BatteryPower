@@ -65,7 +65,7 @@ namespace BatteryPower.Views
             // 刷新界面
             this.RefreshView();
 
-            timer.Interval = TimeSpan.FromSeconds(5);
+            timer.Interval = TimeSpan.FromSeconds(2);
             timer.Tick += Timer_Tick;
             timer.Start();
         }
@@ -136,6 +136,7 @@ namespace BatteryPower.Views
                 }
             }
 
+            this.tbTotal.Text = dataList.Where(i => i.Voltage > 0 && i.Voltage < 250).Select(i => i.Voltage).Sum() + "V";
 
             if (this.sortOrder == "ASC")
             {

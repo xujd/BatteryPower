@@ -21,9 +21,9 @@
         <Border BorderThickness="0,0,0,1" BorderBrush="#cccccc" Margin="11">
             <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
                 <TextBlock Text="数据时间：" FontSize="13" VerticalAlignment="Center"/>
-                <TextBlock x:Name="tbTime" FontSize="13" Text="2019-11-04 11:22:11" VerticalAlignment="Center"/>
+                <TextBlock x:Name="tbTime" FontSize="13" Text="" VerticalAlignment="Center"/>
                 <TextBlock Text="总电压：" FontSize="13" VerticalAlignment="Center" Margin="11,0,0,0"/>
-                <TextBlock x:Name="tbTotal" FontSize="13" Text="12.811V" VerticalAlignment="Center"/>
+                <TextBlock x:Name="tbTotal" FontSize="13" Text="" VerticalAlignment="Center"/>
                 <TextBlock Text="预警门限：" FontSize="13" VerticalAlignment="Center" Margin="11,0,0,0"/>
                 <TextBox x:Name="tbThreshold" FontSize="13" KeyDown="tbThreshold_KeyDown" Text="0" Height="23" VerticalAlignment="Center" Width="70"/>
                 <TextBlock Text="排序方式：" FontSize="13" VerticalAlignment="Center" Margin="11,0,0,0"/>

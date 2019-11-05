@@ -42,6 +42,10 @@
                 <TextBlock Text="预警门限：" Width="90" Height="23" TextAlignment="Right"/>
                 <TextBox x:Name="tbThreshold" Width="200" Height="23"/>
             </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="11,0,0,0">
+                <TextBlock Text="电压参考系数：" Width="90" Height="23" TextAlignment="Right"/>
+                <TextBox x:Name="tbCoefficient" Width="200" Height="23"/>
+            </StackPanel>
             <!--<StackPanel Orientation="Horizontal" Margin="11,0,0,0" Visibility="Collapsed">
                 <TextBlock Text="采集周期(分钟)：" Width="90" Height="23" TextAlignment="Right"/>
                 <TextBox x:Name="tbCollectCycle" Width="200" Height="23"/>
@@ -64,6 +68,7 @@
                 <DataGridTextColumn Header="关键机车号" Width="Auto" Binding="{Binding keyTrainNo}"/>
                 <DataGridTextColumn Header="电池型号" Width="Auto" Binding="{Binding batteryType}"/>
                 <DataGridTextColumn Header="预警门限" Width="Auto" Binding="{Binding threshold}"/>
+                <DataGridTextColumn Header="电压参考系数" Width="Auto" Binding="{Binding coefficient}"/>
                 <DataGridTextColumn Header="最后修改时间" Width="Auto" Binding="{Binding lastModifyTime}"/>
             </DataGrid.Columns>
         </DataGrid>

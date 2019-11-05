@@ -12,10 +12,10 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
         <WrapPanel Orientation="Horizontal">
-            <StackPanel Orientation="Horizontal" Margin="11,0,0,0">
+            <!--<StackPanel Orientation="Horizontal" Margin="11,0,0,0">
                 <TextBlock Text="地址：" Width="75" Height="23" TextAlignment="Right"/>
                 <TextBox x:Name="tbAddress" Width="200" Height="23"/>
-            </StackPanel>
+            </StackPanel>-->
             <StackPanel Orientation="Horizontal" Margin="11,0,0,0">
                 <TextBlock Text="开始日期：" Width="75" Height="23" TextAlignment="Right"/>
                 <DatePicker x:Name="dpStart" Width="200" Height="23"/>

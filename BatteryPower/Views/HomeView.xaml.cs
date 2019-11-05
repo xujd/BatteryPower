@@ -37,7 +37,7 @@ namespace BatteryPower.Views
 
         private Boolean isDoing = false;
 
-        private Task task = null;
+        private TaskRT task = null;
 
         public HomeView()
         {
@@ -104,7 +104,7 @@ namespace BatteryPower.Views
             this.btnStart.Content = this.isDoing ? "停止任务" : "启动任务";
             if (this.isDoing)
             {
-                this.task = new Task(this.batteryList.ToList(), this.portConfig);
+                this.task = new TaskRT(this.batteryList.ToList(), this.portConfig);
                 this.task.Start();
             }
             else
