@@ -50,17 +50,17 @@ namespace BatteryPower.Views
                 MessageBox.Show("未选中记录，请先选择一条电池资源！");
                 return;
             }
-            int cycle = -1;
-            if (!int.TryParse(tbCollectCycle.Text, out cycle))
-            {
-                MessageBox.Show("采集周期为非法数字！");
-                return;
-            }
-            if (cycle < 5)
-            {
-                MessageBox.Show("采集周期最小为5分钟！");
-                return;
-            }
+            int cycle = 5;
+            //if (!int.TryParse(tbCollectCycle.Text, out cycle))
+            //{
+            //    MessageBox.Show("采集周期为非法数字！");
+            //    return;
+            //}
+            //if (cycle < 5)
+            //{
+            //    MessageBox.Show("采集周期最小为5分钟！");
+            //    return;
+            //}
 
             this.battery.collectCycle = cycle;
             this.battery.isEnabled = this.rbEnabled.IsChecked.HasValue && this.rbEnabled.IsChecked.Value ? "是" : "否";

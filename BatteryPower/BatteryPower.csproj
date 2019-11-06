@@ -85,6 +85,7 @@
     <Compile Include="Helpers\XmlHelper.cs" />
     <Compile Include="Models\Battery.cs" />
     <Compile Include="Models\LogType.cs" />
+    <Compile Include="Models\OperatorInfo.cs" />
     <Compile Include="Models\Port.cs" />
     <Compile Include="Models\VoltageData.cs" />
     <Compile Include="Views\CollectLogView.xaml.cs">

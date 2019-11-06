@@ -27,8 +27,6 @@ namespace BatteryPower.Helpers
         private volatile bool isDoing = false;
         // 定时器
         private DispatcherTimer checkTimer = new DispatcherTimer();
-        private int timeIndex = 0;
-        private int maxIndex = 1;
         // 数据
         private DataTable dataTable = null;
         private string dataFile
@@ -42,7 +40,7 @@ namespace BatteryPower.Helpers
 
         public TaskRT(List<Battery> batteryList, PortConfig portConfig)
         {
-            this.batteryList = batteryList;
+            this.batteryList = batteryList.Where(i => i.isEnabled == "是").OrderBy(i => i.uid).ToList();
             this.portConfig = portConfig;
 
             // 数据表结构
@@ -52,10 +50,9 @@ namespace BatteryPower.Helpers
                 dataTable = new DataTable();
                 DataColumn dc = new DataColumn("采集时间");
                 dataTable.Columns.Add(dc);
-                DataColumn dc2 = new DataColumn("地址");
-                dataTable.Columns.Add(dc2);
 
-                for (var i = 0; i < 24; i++)
+                int len = this.batteryList.Count * 24;
+                for (var i = 0; i < len; i++)
                 {
                     DataColumn col = new DataColumn("单体电压" + (i + 1));
                     dataTable.Columns.Add(col);
@@ -66,7 +63,7 @@ namespace BatteryPower.Helpers
 
         public void Start()
         {
-            if (batteryList == null || batteryList.Where(i => i.isEnabled == "是" && i.collectCycle > 1).Count() == 0)
+            if (batteryList == null || batteryList.Count() == 0)
             {
                 LogHelper.WriteLog(LogType.ERROR, "可执行任务列表为空，请先添加资源并在采集管理中启动任务。");
                 return;
@@ -82,21 +79,17 @@ namespace BatteryPower.Helpers
                 return;
             }
             LogHelper.WriteLog(LogType.INFO, "任务已启动...");
-            var list = batteryList.Where(i => i.isEnabled == "是" && i.collectCycle > 1);
 
             List<int> cycleSpans = new List<int>();
-            foreach (var item in list)
+            foreach (var item in batteryList)
             {
                 var b = new Battery();
                 b.id = item.id;
                 b.address = item.address;
                 b.coefficient = item.coefficient;
-                cycleSpans.Add(item.collectCycle);
                 processingList.Add(b);
                 LogHelper.WriteLog(LogType.INFO, "添加到待执行任务队列，地址为：" + b.address);
             }
-
-            this.maxIndex = MathHelper.LeastCommonMultiple(cycleSpans);
 
             thread = new Thread(new ThreadStart(startTask));
             thread.Start();
@@ -105,7 +98,7 @@ namespace BatteryPower.Helpers
             checkTimer.Interval = TimeSpan.FromSeconds(5);
             checkTimer.Tick += CheckTimer_Tick;
             checkTimer.Start();
-            
+
         }
 
         private void CheckTimer_Tick(object sender, EventArgs e)
@@ -115,7 +108,7 @@ namespace BatteryPower.Helpers
             //    timeIndex = 0;
             //}
             //++timeIndex;
-            var list = batteryList.Where(i => i.isEnabled == "是" && i.collectCycle > 1);
+            var list = batteryList;
 
             foreach (var item in list)
             {
@@ -134,7 +127,7 @@ namespace BatteryPower.Helpers
                 }
             }
 
-            if (timeTick++ >= 60 || isFirstSave)  // 每5分钟保存到存储
+            if (timeTick++ * 5 >= Param.OPERATOR_INFO.StoreCycle * 60 || isFirstSave)  // 按存储周期保存到存储
             {
                 if (!isFirstSave)
                 {
@@ -149,20 +142,22 @@ namespace BatteryPower.Helpers
 
         private void SaveToStore()
         {
-            var list = batteryList.Where(i => i.isEnabled == "是" && i.collectCycle > 1);
+            var list = batteryList;
+            DataRow dr = dataTable.NewRow();
+            int index = 0;
             foreach (var item in list)
             {
                 var curObj = this.lastestData.FindLast(i => i[1].ToString() == item.address);
                 if (curObj != null)
                 {
-                    DataRow dr = dataTable.NewRow();
-                    for (var i = 0; i < curObj.Count(); i++)
+                    dr["采集时间"] = curObj[0];
+                    for (var i = 2; i < curObj.Count(); i++)
                     {
-                        dr[i] = curObj[i];
+                        dr[++index] = curObj[i];
                     }
-                    dataTable.Rows.Add(dr);
                 }
             }
+            dataTable.Rows.Add(dr);
             CSVFileHelper.SaveCSV(dataTable, dataFile);
         }
 
@@ -432,7 +427,7 @@ namespace BatteryPower.Helpers
                 var hexStr = datas[i] + datas[i + 1];
                 var vNum = Int32.Parse(hexStr, System.Globalization.NumberStyles.HexNumber);
                 // 乘以参考系数并放大1000倍
-                voltageList.Add(vNum * coefficient / 1000.0);
+                voltageList.Add(Math.Round(vNum * coefficient / 1000.0, 3));
             }
 
             // 保存到本地csv

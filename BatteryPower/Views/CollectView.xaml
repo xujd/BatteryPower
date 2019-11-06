@@ -41,7 +41,7 @@
             <DataGrid.Columns>
                 <DataGridTextColumn Header="编号" Width="*" Binding="{Binding id}"/>
                 <DataGridTextColumn Header="地址" Width="*" Binding="{Binding address}"/>
-                <DataGridTextColumn Header="采集周期(分钟)" Width="*" Binding="{Binding collectCycle}"/>
+                <!--<DataGridTextColumn Header="采集周期(分钟)" Width="*" Binding="{Binding collectCycle}"/>-->
                 <DataGridTextColumn Header="是否启动" Width="*" Binding="{Binding isEnabled}"/>
                 <DataGridTextColumn Header="最后修改时间" Width="*" Binding="{Binding lastModifyTime}"/>
             </DataGrid.Columns>

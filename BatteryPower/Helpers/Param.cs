@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BatteryPower.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,9 +16,14 @@ namespace BatteryPower.Helpers
         // 端口数据
         public static string PORT_FILE = APPFILEPATH + @"\data\port.xml";
         // 电压数据
-        public static string VOLTAGE_FILE = APPFILEPATH + @"\data\voltage.csv";
-        // 最新电压数据：采集时间、地址、第1节、第2节、...第24节
+        public static string VOLTAGE_FILE
+        {
+            get { return APPFILEPATH + @"\data\" + string.Format("{0}_{1}_{2}", OPERATOR_INFO.BatteryNo, OPERATOR_INFO.OprUser, OPERATOR_INFO.TrainNo) + ".csv"; }
+        }
+        // 最新电压数据：采集时间、地址、第1节、第2节、...第24节...
         public static List<object[]> CURRENT_VOLTAGE_DATA = new List<object[]>();
+        // 任务操作信息
+        public static OperatorInfo OPERATOR_INFO = new OperatorInfo();
 
         static Param()
         {

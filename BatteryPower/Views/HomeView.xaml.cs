@@ -98,8 +98,51 @@ namespace BatteryPower.Views
             }
         }
 
+        private bool Check()
+        {
+            if (string.IsNullOrEmpty(this.tbBarrery.Text))
+            {
+                LogHelper.WriteLog(LogType.ERROR, "任务信息不全，蓄电池编号不能为空！");
+                return false;
+            }
+            Param.OPERATOR_INFO.BatteryNo = this.tbBarrery.Text;
+
+            if (string.IsNullOrEmpty(this.tbOprUser.Text))
+            {
+                LogHelper.WriteLog(LogType.ERROR, "任务信息不全，操作人员不能为空！");
+                return false;
+            }
+            Param.OPERATOR_INFO.OprUser = this.tbOprUser.Text;
+
+            if (string.IsNullOrEmpty(this.tbTrainNo.Text))
+            {
+                LogHelper.WriteLog(LogType.ERROR, "任务信息不全，机车号不能为空！");
+                return false;
+            }
+            Param.OPERATOR_INFO.TrainNo = this.tbTrainNo.Text;
+
+            double cycle = 5;
+            if (!double.TryParse(tbCycle.Text, out cycle))
+            {
+                LogHelper.WriteLog(LogType.ERROR, "任务信息错误，采集周期为非法数字！");
+                return false;
+            }
+            if (cycle < 5)
+            {
+                LogHelper.WriteLog(LogType.ERROR, "任务信息错误，采集周期最小为5分钟！");
+                return false;
+            }
+            Param.OPERATOR_INFO.StoreCycle = cycle;
+
+            return true;
+        }
+
         private void btnStart_Click(object sender, RoutedEventArgs e)
         {
+            if (!this.Check())
+            {
+                return;
+            }
             this.isDoing = !this.isDoing;
             this.btnStart.Content = this.isDoing ? "停止任务" : "启动任务";
             if (this.isDoing)

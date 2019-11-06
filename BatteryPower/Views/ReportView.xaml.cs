@@ -53,90 +53,78 @@ namespace BatteryPower.Views
 
         private void ReadDataFromStore()
         {
-            dataTableToShow.Clear();
-            dataTable = CSVFileHelper.OpenCSV(dataFile);
-            if (dataTable == null)
-            {
-                dataTable = new DataTable();
-                DataColumn dc = new DataColumn("采集时间");
-                dataTable.Columns.Add(dc);
-                DataColumn dc2 = new DataColumn("地址");
-                dataTable.Columns.Add(dc2);
+            dataTableToShow = CSVFileHelper.OpenCSV(dataFile);
 
-                for (var i = 0; i < 24; i++)
-                {
-                    DataColumn col = new DataColumn("单体电压" + (i + 1));
-                    dataTable.Columns.Add(col);
-                }
-                CSVFileHelper.SaveCSV(dataTable, dataFile);
-            }
+            //if (this.batteryList.Count > 0)
+            //{
+            //    List<string> addrList = new List<string>();
+            //    foreach(var b in this.batteryList)
+            //    {
+            //        addrList.Add("'" + b.address + "'");
+            //    }
+            //    while (dataTable.Select("地址 IN (" + string.Join(",", addrList) + ")").Count() > 0)
+            //    {
+            //        var time = "";
+            //        foreach (var b in this.batteryList)
+            //        {
+            //            var dr = dataTable.Select("地址 = " + b.address);
+            //            if (dr != null && dr.Count() > 0)
+            //            {
+            //                time = dr[0]["采集时间"].ToString();
+            //                break;
+            //            }
+            //        }
 
-            if (this.batteryList.Count > 0)
-            {
-                List<string> addrList = new List<string>();
-                foreach(var b in this.batteryList)
-                {
-                    addrList.Add("'" + b.address + "'");
-                }
-                while (dataTable.Select("地址 IN (" + string.Join(",", addrList) + ")").Count() > 0)
-                {
-                    var time = "";
-                    foreach (var b in this.batteryList)
-                    {
-                        var dr = dataTable.Select("地址 = " + b.address);
-                        if (dr != null && dr.Count() > 0)
-                        {
-                            time = dr[0]["采集时间"].ToString();
-                            break;
-                        }
-                    }
+            //        if(!string.IsNullOrEmpty(time))
+            //        {
+            //            DataRow newRow = dataTableToShow.NewRow();
+            //            newRow["采集时间"] = time;
+            //            // 前后一分钟的数据为同一批次数据
+            //            var dateStart = DateTime.Parse(time).AddMinutes(-1);
+            //            var dateEnd = DateTime.Parse(time).AddMinutes(1);
+            //            int index = 0;
+            //            foreach (var b in this.batteryList)
+            //            {
+            //                var drs = dataTable.Select("地址 = " + b.address + " AND 采集时间 >= #" + dateStart + "# AND 采集时间 <= #" + dateEnd + "#");
+            //                if (drs != null && drs.Count() > 0)
+            //                {
+            //                    var dr = drs[0];
+            //                    for (var i = 2; i < dr.ItemArray.Length; i++)
+            //                    {
+            //                        newRow[++index] = dr[i];
+            //                    }
+            //                    dataTable.Rows.Remove(dr);
+            //                }
+            //                else
+            //                {
+            //                    for (var i = 0; i < 24; i++)
+            //                    {
+            //                        newRow[++index] = null;
+            //                    }
+            //                }
+            //            }
 
-                    if(!string.IsNullOrEmpty(time))
-                    {
-                        DataRow newRow = dataTableToShow.NewRow();
-                        newRow["采集时间"] = time;
-                        // 前后一分钟的数据为同一批次数据
-                        var dateStart = DateTime.Parse(time).AddMinutes(-1);
-                        var dateEnd = DateTime.Parse(time).AddMinutes(1);
-                        int index = 0;
-                        foreach (var b in this.batteryList)
-                        {
-                            var drs = dataTable.Select("地址 = " + b.address + " AND 采集时间 >= #" + dateStart + "# AND 采集时间 <= #" + dateEnd + "#");
-                            if (drs != null && drs.Count() > 0)
-                            {
-                                var dr = drs[0];
-                                for (var i = 2; i < dr.ItemArray.Length; i++)
-                                {
-                                    newRow[++index] = dr[i];
-                                }
-                                dataTable.Rows.Remove(dr);
-                            }
-                            else
-                            {
-                                for (var i = 0; i < 24; i++)
-                                {
-                                    newRow[++index] = null;
-                                }
-                            }
-                        }
-
-                        dataTableToShow.Rows.Add(newRow);
-                    }
-                }
-            }
+            //            dataTableToShow.Rows.Add(newRow);
+            //        }
+            //    }
+            //}
         }
 
         private void CreateShowTable()
         {
-            dataTableToShow = new DataTable();
-            DataColumn dc = new DataColumn("采集时间");
-            dataTableToShow.Columns.Add(dc);
-
-            int len = this.batteryList.Count * 24;
-            for (var i = 0; i < len; i++)
+            dataTableToShow = CSVFileHelper.OpenCSV(dataFile);
+            if (dataTableToShow == null)
             {
-                DataColumn col = new DataColumn("单体电压" + (i + 1));
-                dataTableToShow.Columns.Add(col);
+                dataTableToShow = new DataTable();
+                DataColumn dc = new DataColumn("采集时间");
+                dataTableToShow.Columns.Add(dc);
+
+                int len = this.batteryList.Count * 24;
+                for (var i = 0; i < len; i++)
+                {
+                    DataColumn col = new DataColumn("单体电压" + (i + 1));
+                    dataTableToShow.Columns.Add(col);
+                }
             }
             dataGrid.ItemsSource = dataTableToShow.DefaultView;
         }

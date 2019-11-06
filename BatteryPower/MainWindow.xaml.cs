@@ -1,8 +1,10 @@
 ﻿using BatteryPower.Helpers;
+using BatteryPower.Models;
 using BatteryPower.Views;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -23,9 +25,17 @@ namespace BatteryPower
     public partial class MainWindow : Window
     {
         private string sysName = "蓄电池管理系统";
+        private string pubTime = "2019-11-01";
         public MainWindow()
         {
             InitializeComponent();
+            var version = Assembly.GetExecutingAssembly().GetName().Version;
+            pubTime = System.IO.File.GetLastWriteTime(this.GetType().Assembly.Location).ToString();
+
+            if (DateTime.Now > DateTime.Parse(pubTime).AddDays(400))
+            {
+                LogHelper.WriteLog(LogType.ERROR, "软件授权已到期！请联系管理人员。");
+            }
             LogHelper.dispatcher = this.Dispatcher;
 
             this.Closing += MainWindow_Closing;

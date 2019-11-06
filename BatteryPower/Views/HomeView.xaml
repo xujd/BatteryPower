@@ -22,6 +22,8 @@
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -61,11 +63,23 @@
             <TextBlock Text="校验位：" Margin="11,0,0,0"/>
             <TextBlock x:Name="tbParity" Text="-"/>
         </WrapPanel>
-        <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.ColumnSpan="2" HorizontalAlignment="Center">
+        <comps:FuncTitle Title="任务信息" Grid.Row="4" Grid.ColumnSpan="2"/>
+        <WrapPanel Orientation="Horizontal" Margin="11,0" Grid.Row="5" Grid.ColumnSpan="2">
+            <TextBlock Text="蓄电池编号：" Padding="0,3,0,0"/>
+            <TextBox x:Name="tbBarrery" Width="100" Height="23"/>
+            <TextBlock Text="操作人员：" Padding="0,3,0,0" Margin="11,0,0,0"/>
+            <TextBox x:Name="tbOprUser" Width="100" Height="23"/>
+            <TextBlock Text="机车号：" Padding="0,3,0,0" Margin="11,0,0,0"/>
+            <TextBox x:Name="tbTrainNo" Width="100" Height="23"/>
+            <TextBlock Text="报表存储周期：" Padding="0,3,0,0" Margin="11,0,0,0"/>
+            <TextBox x:Name="tbCycle" Text="5" Width="100" Height="23"/>
+            <TextBlock Text="分钟" Padding="0,3,0,0"/>
+        </WrapPanel>
+        <StackPanel Orientation="Horizontal" Grid.Row="6" Grid.ColumnSpan="2" HorizontalAlignment="Center">
             <Button x:Name="btnStart" Height="36" Width="80" Margin="11" Click="btnStart_Click" HorizontalAlignment="Center">启动任务</Button>
             <Button x:Name="btnSync" Height="36" Width="80" Margin="11" Click="btnSync_Click" HorizontalAlignment="Center">同步配置</Button>
         </StackPanel>
-        <comps:FuncTitle Title="执行日志" Grid.Row="5" Grid.ColumnSpan="2"/>
-        <local:CollectLogView Grid.Row="6" Grid.ColumnSpan="2"/>
+        <comps:FuncTitle Title="执行日志" Grid.Row="7" Grid.ColumnSpan="2"/>
+        <local:CollectLogView Grid.Row="8" Grid.ColumnSpan="2"/>
     </Grid>
 </UserControl>
