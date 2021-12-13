@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:BatteryPower"
         xmlns:view="clr-namespace:BatteryPower.Views"
         mc:Ignorable="d" Icon="./icon.ico"
-        Title="蓄电池管理系统-巡检调试" Height="600" Width="800">
+        Title="蓄电池管理系统-首页" Height="600" Width="800">
     <Window.Resources>
         <Style TargetType="TextBlock">
             <Setter Property="Padding" Value="0,3,0,0"/>

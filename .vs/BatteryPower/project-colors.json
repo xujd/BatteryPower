@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "81b4d444-a81b-494a-b831-6349709f2f83": {
+      "ProjectGuid": "81b4d444-a81b-494a-b831-6349709f2f83",
+      "DisplayName": "BatteryPower",
+      "ColorIndex": 0
+    }
+  },
+  "NextColorIndex": 1
+}
